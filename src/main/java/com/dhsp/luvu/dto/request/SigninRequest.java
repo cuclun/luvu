@@ -1,14 +1,14 @@
 package com.dhsp.luvu.dto.request;
 
-public class LoginRequest {
+public class SigninRequest {
     private String username;
     private String password;
 
-    public LoginRequest() {
+    public SigninRequest() {
 
     }
 
-    public LoginRequest(String username, String password) {
+    public SigninRequest(String username, String password) {
         super();
         this.username = username;
         this.password = password;
