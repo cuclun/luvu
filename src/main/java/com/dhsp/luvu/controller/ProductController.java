@@ -147,13 +147,12 @@ public class ProductController {
             String content = specification.getContent();
             SpecificationResponse specificationResponse = new SpecificationResponse(specification.getId(), content);
             specificationResponses.add(specificationResponse);
-            content = content.replaceAll(" ", "");
-            if (content.indexOf("Size") != -1) {
+            if (content.contains("Size")) {
                 String sizes = content.substring(5);
-                sizeResponses = Arrays.asList(sizes.split("-"));
+                sizeResponses = Arrays.asList(sizes.split("–"));
             }
 
-            if (content.indexOf("Màu") != -1) {
+            if (content.contains("Màu")) {
                 String colors = content.substring(4);
                 colorResponses = Arrays.asList(colors.split(","));
             }
