@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface SpecificationRepository extends JpaRepository<Specification, Long> {
     List<Specification> findAllByProduct(Product product);
+
+    void deleteAllByProduct(Product product);
 }

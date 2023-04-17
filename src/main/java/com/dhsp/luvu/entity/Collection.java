@@ -4,24 +4,18 @@ import javax.persistence.*;
 
 @Entity
 public class Collection {
+
     @Id
-    @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name", nullable = false, unique = true)
+    @Column(nullable = false, unique = true)
     private String name;
 
-    @ManyToOne
-    @JoinColumn(name = "image_id")
-    private Image image;
+    @Column(nullable = false)
+    private String image;
 
     public Collection() {
-    }
-
-    public Collection(String name, Image image) {
-        this.name = name;
-        this.image = image;
     }
 
     public Long getId() {
@@ -40,11 +34,11 @@ public class Collection {
         this.name = name;
     }
 
-    public Image getImage() {
+    public String getImage() {
         return image;
     }
 
-    public void setImage(Image image) {
+    public void setImage(String image) {
         this.image = image;
     }
 }

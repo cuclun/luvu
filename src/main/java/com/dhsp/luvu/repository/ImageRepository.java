@@ -11,7 +11,10 @@ import java.util.List;
 
 public interface ImageRepository extends JpaRepository<Image, Long> {
     List<Image> findAllByProduct(Product product);
+
     Image findByName(String name);
+
+    void deleteAllByProduct(Product product);
 
     @Transactional
     @Modifying

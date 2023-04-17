@@ -5,24 +5,17 @@ import java.util.List;
 public class CollectionResponse {
     private Long id;
     private String name;
-    private Long image;
+    private String image;
     private List<ProductResponse> products;
 
     public CollectionResponse() {
     }
 
-    public CollectionResponse(Long id, String name, List<ProductResponse> products, Long image) {
-        this.id = id;
-        this.name = name;
-        this.image = image;
-        this.products = products;
-    }
-
-    public Long getImage() {
+    public String getImage() {
         return image;
     }
 
-    public void setImage(Long image) {
+    public void setImage(String image) {
         this.image = image;
     }
 

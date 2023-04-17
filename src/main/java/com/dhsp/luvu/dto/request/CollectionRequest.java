@@ -1,19 +1,14 @@
 package com.dhsp.luvu.dto.request;
 
+import org.springframework.web.multipart.MultipartFile;
+
 public class CollectionRequest {
+
     private String name;
-    private Long imageID;
+
+    private MultipartFile image;
 
     public CollectionRequest() {
-    }
-
-    public CollectionRequest(String name) {
-        this.name = name;
-    }
-
-    public CollectionRequest(String name, Long imageID) {
-        this.name = name;
-        this.imageID = imageID;
     }
 
     public String getName() {
@@ -24,11 +19,11 @@ public class CollectionRequest {
         this.name = name;
     }
 
-    public Long getImageID() {
-        return imageID;
+    public MultipartFile getImage() {
+        return image;
     }
 
-    public void setImageID(Long imageID) {
-        this.imageID = imageID;
+    public void setImage(MultipartFile image) {
+        this.image = image;
     }
 }

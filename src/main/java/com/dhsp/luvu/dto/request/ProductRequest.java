@@ -1,25 +1,19 @@
 package com.dhsp.luvu.dto.request;
 
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Arrays;
+
 public class ProductRequest {
     private String name;
+    private Long collectionId;
     private Long price;
     private String description;
-    private Long collectionId;
     private int quantity;
-    private Long[] imagesId;
+    private MultipartFile[] images;
     private String[] specifications;
 
     public ProductRequest() {
-    }
-
-    public ProductRequest(String name, Long price, String description, Long collectionId, int quantity, Long[] imagesId, String[] specifications) {
-        this.name = name;
-        this.price = price;
-        this.description = description;
-        this.collectionId = collectionId;
-        this.quantity = quantity;
-        this.imagesId = imagesId;
-        this.specifications = specifications;
     }
 
     public String getName() {
@@ -62,12 +56,12 @@ public class ProductRequest {
         this.specifications = specifications;
     }
 
-    public Long[] getImagesId() {
-        return imagesId;
+    public MultipartFile[] getImages() {
+        return images;
     }
 
-    public void setImagesId(Long[] imagesId) {
-        this.imagesId = imagesId;
+    public void setImages(MultipartFile[] images) {
+        this.images = images;
     }
 
     public int getQuantity() {

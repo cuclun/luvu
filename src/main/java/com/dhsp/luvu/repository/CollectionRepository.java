@@ -10,12 +10,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 public interface CollectionRepository extends JpaRepository<Collection, Long> {
+    Boolean existsByName(String name);
+
     Collection findByName(String name);
 
-    List<Collection> findAllByOrderByIdAsc();
-
-    @Transactional
-    @Modifying
-    @Query("update Collection c set c.name = :collectionName, c.image = :image where c.id = :idCollection")
-    void updateCollection(Long idCollection, String collectionName, Image image);
+    List<Collection> findByOrderByIdAsc();
 }
