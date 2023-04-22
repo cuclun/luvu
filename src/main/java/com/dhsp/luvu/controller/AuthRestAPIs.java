@@ -46,21 +46,28 @@ public class AuthRestAPIs {
             userService.register(signupRequest);
             return new ResponseEntity<>(new MessageResponse("User registered successfully!"), HttpStatus.OK);
         } catch (Exception e) {
+
+
             return new ResponseEntity<>(new MessageResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
 
     @PostMapping("/signin")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody SigninRequest signinRequest) {
+    public ResponseEntity<?> authenticateUser(@Valid @RequestBody SigninRequest signinRequest) { //gửi yêu cầu đăng nhập
 
+        // xác thực tài khoản
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(signinRequest.getUsername(), signinRequest.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
+        //tạo 1 accesstoken để khi thực hiện các chức năng của MOD hoặc ADMIN thì hắn sẽ mã hóa lại cái dãy nớ để coi là cái chi mà thực hiện chức năng mô
         String jwt = jwtProvider.generateJwtToken(authentication);
+
+        // lưu thông tin đã đăng nhập
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
+        //trả về 1 object gồm...
         return new ResponseEntity<>(new JwtResponse(jwt, userDetails.getUsername(), userDetails.getAuthorities(), jwtProvider.getJwtExpiration()), HttpStatus.OK);
     }
 

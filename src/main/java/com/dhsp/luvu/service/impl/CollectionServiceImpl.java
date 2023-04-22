@@ -1,16 +1,17 @@
 package com.dhsp.luvu.service.impl;
 
 import com.dhsp.luvu.dto.request.CollectionRequest;
+import com.dhsp.luvu.dto.response.CollectionResponse;
 import com.dhsp.luvu.entity.Collection;
 import com.dhsp.luvu.repository.CollectionRepository;
 import com.dhsp.luvu.service.CollectionService;
+import com.dhsp.luvu.service.ProductService;
 import com.dhsp.luvu.utils.UploadUtils;
-import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
-import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -18,6 +19,9 @@ public class CollectionServiceImpl implements CollectionService {
 
     @Autowired
     CollectionRepository collectionRepo;
+
+    @Autowired
+    ProductService productService;
 
     @Override
     public Collection save(CollectionRequest request) {
@@ -71,8 +75,16 @@ public class CollectionServiceImpl implements CollectionService {
     }
 
     @Override
-    public List<Collection> findAll() {
-        return collectionRepo.findAll();
+    public List<CollectionResponse> findAll() {
+
+        List<CollectionResponse> collectionResponses = new ArrayList<>();
+
+        for (Collection collection : collectionRepo.findAll()) {
+            collectionResponses.add(new CollectionResponse(collection.getId(), collection.getName(), collection.getImage(),
+                    productService.findByCollectionId(collection.getId())));
+        }
+
+        return collectionResponses;
     }
 
     @Override

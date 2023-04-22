@@ -14,6 +14,7 @@ import com.dhsp.luvu.repository.SpecificationRepository;
 import com.dhsp.luvu.service.ProductService;
 import com.dhsp.luvu.utils.UploadUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -106,14 +107,14 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public ProductResponse save(ProductRequest request) {
-        if (productRepo.existsByName(request.getName()))
-            throw new RuntimeException("Sản phẩm đã tồn tại trong hệ thống!");
+        public ProductResponse save(ProductRequest request) {
+            if (productRepo.existsByName(request.getName()))
+                throw new RuntimeException("Sản phẩm đã tồn tại trong hệ thống!");
 
-        Product product = new Product();
-        product.setName(request.getName());
-        product.setPrice(request.getPrice());
-        product.setQuantity(request.getQuantity());
+            Product product = new Product();
+            product.setName(request.getName());
+            product.setPrice(request.getPrice());
+            product.setQuantity(request.getQuantity());
         product.setDescription(request.getDescription());
         product.setCollection(collectionRepo.findById(request.getCollectionId()).orElseThrow(() -> new RuntimeException("Danh mục không tồn tại!")));
 
@@ -153,6 +154,8 @@ public class ProductServiceImpl implements ProductService {
             }
 
             return findById(id);
+        }  catch (DataIntegrityViolationException e) {
+            throw new RuntimeException("Không thể chỉnh sửa thành sản phẩm đã có trong hệ thống!");
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }

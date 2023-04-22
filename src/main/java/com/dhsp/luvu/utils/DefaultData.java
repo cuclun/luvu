@@ -33,18 +33,30 @@ public class DefaultData implements CommandLineRunner {
         if (!roleRepository.existsByName("ROLE_ADMIN"))
             roleRepository.save(new Role("ROLE_ADMIN"));
 
-        if (!userRepository.findByUsername("admin").isPresent()) {
+        if (!userRepository.findByUsername("luvu").isPresent()) {
             Set<Role> roles = new HashSet<>(roleRepository.findAll());
 
-            User admin = new User();
+            User cuc = new User();
 
-            admin.setName("Trần Thị Thanh Cúc");
-            admin.setUsername("admin");
-            admin.setEmail("admin@gmail.com");
-            admin.setPassword(encoder.encode("admin"));
-            admin.setRoles(roles);
+            cuc.setName("Trần Thị Thanh Cúc");
+            cuc.setUsername("luvu");
+            cuc.setEmail("cuctranluvu@gmail.com");
+            cuc.setPassword(encoder.encode("luvu"));
+            cuc.setRoles(roles);
 
-            userRepository.save(admin);
+            userRepository.save(cuc);
+        }if (!userRepository.findByUsername("myquyen").isPresent()) {
+            Set<Role> roles = new HashSet<>(roleRepository.findAll());
+
+            User quyen = new User();
+
+            quyen.setName("Nguyễn Thị Mỹ Quyên");
+            quyen.setUsername("myquyen");
+            quyen.setEmail("myquyen@gmail.com");
+            quyen.setPassword(encoder.encode("myquyen"));
+            quyen.setRoles(roles);
+
+            userRepository.save(quyen);
         }
     }
 }

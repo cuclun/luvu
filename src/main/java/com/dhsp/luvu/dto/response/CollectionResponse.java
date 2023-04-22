@@ -11,6 +11,13 @@ public class CollectionResponse {
     public CollectionResponse() {
     }
 
+    public CollectionResponse(Long id, String name, String image, List<ProductResponse> products) {
+        this.id = id;
+        this.name = name;
+        this.image = image;
+        this.products = products;
+    }
+
     public String getImage() {
         return image;
     }
