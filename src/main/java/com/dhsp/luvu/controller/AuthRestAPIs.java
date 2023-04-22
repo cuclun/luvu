@@ -4,6 +4,7 @@ import com.dhsp.luvu.dto.request.SigninRequest;
 import com.dhsp.luvu.dto.request.SignupRequest;
 import com.dhsp.luvu.dto.response.JwtResponse;
 import com.dhsp.luvu.dto.response.MessageResponse;
+import com.dhsp.luvu.entity.User;
 import com.dhsp.luvu.security.jwt.JwtProvider;
 import com.dhsp.luvu.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,11 +44,9 @@ public class AuthRestAPIs {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signupRequest) {
         try {
-            userService.register(signupRequest);
-            return new ResponseEntity<>(new MessageResponse("User registered successfully!"), HttpStatus.OK);
+            User user = userService.register(signupRequest);
+            return new ResponseEntity<>(user, HttpStatus.OK);
         } catch (Exception e) {
-
-
             return new ResponseEntity<>(new MessageResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
@@ -71,4 +70,9 @@ public class AuthRestAPIs {
         return new ResponseEntity<>(new JwtResponse(jwt, userDetails.getUsername(), userDetails.getAuthorities(), jwtProvider.getJwtExpiration()), HttpStatus.OK);
     }
 
+    @DeleteMapping(value = {"/{id}"})
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> deleteAccount(@PathVariable(value = "id") Long id) {
+        return new ResponseEntity<>(userService.delete(id), HttpStatus.OK);
+    }
 }

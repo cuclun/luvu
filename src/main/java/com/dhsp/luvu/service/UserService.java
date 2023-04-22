@@ -9,6 +9,8 @@ public interface UserService {
 
     User register(SignupRequest signupRequest);
 
+    Boolean delete(Long id);
+
     List<User> findAll();
 
 }

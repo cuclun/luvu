@@ -33,11 +33,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public User register(SignupRequest signupRequest) {
         if (userRepository.existsByUsername(signupRequest.getUsername())) {
-            throw new RuntimeException("Fail -> Us88ername is already taken!");
+            throw new RuntimeException("Username đã tồn tại!");
         }
 
         if (userRepository.existsByEmail(signupRequest.getEmail())) {
-            throw new RuntimeException("Fail -> Email is already in use!");
+            throw new RuntimeException("Email đã tồn tại!");
         }
 
         User user = new User();
@@ -52,6 +52,16 @@ public class UserServiceImpl implements UserService {
         user.setRoles(roles);
 
         return userRepository.save(user);
+    }
+
+    @Override
+    public Boolean delete(Long id) {
+        try {
+            userRepository.deleteById(id);
+            return true;
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     @Override
