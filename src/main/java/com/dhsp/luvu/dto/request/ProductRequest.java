@@ -2,8 +2,6 @@ package com.dhsp.luvu.dto.request;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Arrays;
-
 public class ProductRequest {
     private String name;
     private Long collectionId;

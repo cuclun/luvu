@@ -13,6 +13,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -55,7 +56,7 @@ public class ProductController {
     @DeleteMapping(value = {"/{id}/", "/{id}"})
     @PreAuthorize("hasRole('MOD') or hasRole('ADMIN')")
     @ResponseBody
-    public ResponseEntity<?> deleteCollection(@PathVariable Long id) {
+    public ResponseEntity<?> deleteProduct(@PathVariable Long id) {
 
         try {
             productService.delete(id);

@@ -14,6 +14,7 @@ import com.dhsp.luvu.repository.SpecificationRepository;
 import com.dhsp.luvu.service.ProductService;
 import com.dhsp.luvu.utils.UploadUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.NestedExceptionUtils;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -59,7 +60,7 @@ public class ProductServiceImpl implements ProductService {
             specificationResponses.add(specificationResponse);
             if (content.contains("Size")) {
                 String sizes = content.substring(5);
-                sizeResponses = Arrays.asList(sizes.split("–"));
+                sizeResponses = Arrays.asList(sizes.split("-"));
             }
 
             if (content.contains("Màu")) {
@@ -107,26 +108,27 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-        public ProductResponse save(ProductRequest request) {
-            if (productRepo.existsByName(request.getName()))
-                throw new RuntimeException("Sản phẩm đã tồn tại trong hệ thống!");
+    public ProductResponse save(ProductRequest request) {
+        if (productRepo.existsByName(request.getName()))
+            throw new RuntimeException("Sản phẩm đã tồn tại trong hệ thống!");
 
-            Product product = new Product();
-            product.setName(request.getName());
-            product.setPrice(request.getPrice());
-            product.setQuantity(request.getQuantity());
+        Product product = new Product();
+        product.setName(request.getName());
+        product.setPrice(request.getPrice());
+        product.setQuantity(request.getQuantity());
         product.setDescription(request.getDescription());
         product.setCollection(collectionRepo.findById(request.getCollectionId()).orElseThrow(() -> new RuntimeException("Danh mục không tồn tại!")));
 
         try {
+            validate(request);// phải bỏ trong try mới bắt ngoại lệ của hàm đó được.
             product = productRepo.save(product);
             for (MultipartFile image : request.getImages()) {
                 String nameImage = UploadUtils.save(image);
                 imageRepo.save(new Image(nameImage, product));
             }
 
-            for (String specification : request.getSpecifications()) {
-                specificationRepo.save(new Specification(specification, product));
+            for (int i = 1; i < request.getSpecifications().length; i++) {
+                specificationRepo.save(new Specification(request.getSpecifications()[i], product));
             }
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
@@ -134,27 +136,46 @@ public class ProductServiceImpl implements ProductService {
         return findById(product.getId());
     }
 
+    //kệ hắn, rứa được rồi đó tiếp cái try catch đi.. tới đâu rồi he :v
     @Override
-    @Transactional
+    @Transactional // hiểu cái transactional ni không như trigger rứa.. có giống k he :v
+    //trigger thêm sửa xóa mà không hợp lí cái sài rollbaack là hắn rollback đó..
+    // chỗ ni khác xíu
+    // Ví dụ chỉ select không thay đổi dữ liệu thì không cần.
+    // Khi có @Transactional nó sẽ chạy hết hàm rồi mới commit... ví dụ..
     public ProductResponse update(ProductRequest request, Long id) {
+
+        // Tìm kiếm sản phẩm muốn chỉnh sửa thông tin.
+        // Nếu tìm không thầy sản phẩm sẽ ném về 1 ngoại lệ RuntimeException có message. khi ném về ngoại rồi thì giống như return không ththwucj hiện câu lệnh ở dưới.
         Product product = productRepo.findById(id).orElseThrow(() -> new RuntimeException("Sản phẩm này không tồn tại!"));
         try {
-            specificationRepo.deleteAllByProduct(product);
+            //xong ở đây
+            validate(request);// nếu nó không lỗi thì sẽ lưu hoặc update nếu
+            // Xóa tất cả specification hiện tại của product. là xóa cái chi
+            specificationRepo.deleteAllByProduct(product); // ý là dùng lại của họ.. Jpa có sẵn rất nhiêu hàm cơ bản.
+            // Nếu không có hàm mình cần. Chỉ cần đặt tên hàm theo quy tắc thì Jpa tự hiểu câu lệnh Query...
+            // ời hỏi chữ phía trước dấu ., phía sau chưa hỏi. đọc thi
 
-            product.setName(request.getName());
+            // Set các thuộc tính product lại
+            product.setName(request.getName()); // chừ mình muốn nếu họ nhập tên dài quá thì nói là nhập ngắn thôi
             product.setPrice(request.getPrice());
             product.setQuantity(request.getQuantity());
             product.setDescription(request.getDescription());
+            // Giống như sản phẩm ở trên... Tìm kiếm danh mục...
             product.setCollection(collectionRepo.findById(request.getCollectionId()).orElseThrow(() -> new RuntimeException("Danh mục không tồn tại!")));
 
-            productRepo.save(product);
-
-            for (String specification : request.getSpecifications()) {
-                specificationRepo.save(new Specification(specification, product));
+            // lưu sản phẩm... Cũng là hàm save nhuưng nếu có id thì sẽ chỉnh sửa sản phẩm theo id đó. nếu không có thì sẽ tạo mới.
+            productRepo.save(product);// ở đây lưu sản phẩm xong
+// ví dụ specification cũ của sản phẩm 1 2 3. bấm chỉnh sửa nhưng không thay đổi... nó vẫn xóa 1 2 3 rồi lưu 1 2 3 lại.
+            // lưu specification lại cái nớ có sẵn à
+            // cái mã đang hiển thị đó là cái cũ. mình lấy ra từ db. xong sửa hay không chỉnh sửa gì. nó cũng đem cái mảng đó gửi vô lại để lưu.
+            for (int i = 1; i < request.getSpecifications().length; i++) {
+                specificationRepo.save(new Specification(request.getSpecifications()[i], product));
             }
-
+            // chừ mình muốn kiểm tra cái chi là mình if từng cái rứa à.. nếu có cách mô hay hơn thì làm :v ok ok rồi... nếu kiểu tra ở đây thì khi tạo 1 product mới cũng phải kiểm tra
+            // thì sẽ tạo ra 1 cái gọi là validate...
             return findById(id);
-        }  catch (DataIntegrityViolationException e) {
+        } catch (DataIntegrityViolationException e) {
             throw new RuntimeException("Không thể chỉnh sửa thành sản phẩm đã có trong hệ thống!");
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
@@ -173,5 +194,14 @@ public class ProductServiceImpl implements ProductService {
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
+    }
+    // là làm cái chung ni, xong mô muốn sài là ghi à đúng. mà chỉ 2 cái là cần thôi save với update. rứa nảy m ghi boolean thì làm răng
+    // tính ghi boolean nhưng chỉ trả về đúng sai
+    // không biết lỗi chi nên sửa
+    // để boolean vẫn throw được. nhưng mà thừa nên sửa thành void
+    boolean validate(ProductRequest product) {
+        if(product.getName().length() > 255)
+            throw new RuntimeException("Nhập ngắn thôi má");
+        return true;
     }
 }

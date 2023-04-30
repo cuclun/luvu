@@ -15,7 +15,7 @@ public class Product {
     @Column(name = "price", nullable = false)
     private Long price;
 
-    @Column(name = "description", nullable = false)
+    @Column(name = "description", nullable = false, length = 1028)
     private String description;
 
     @Column(name = "quantity", nullable = false)

@@ -17,6 +17,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+//Cấu hình security.. cấu hình làm chi 2 lớp UserDetail kia hỗ trợ cấu hình. 3 lớp kia thì tạo jwt với kiểm tra jwt đó hợp lệ hay không...
+// Cái ni cũng cop hiểu rứa thôi@ợp lệ
+// Thay vì tự mò vô db lôi ra để kiểm tra xem có đúng tk mk hay chưa thì dùng cái ni
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(
@@ -54,6 +57,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
 	protected void configure(HttpSecurity http) throws Exception {
+        // đoạn ni phân quyền... K hiểu cái k biết giải thích răng cop hết hả.. phần security cop của cô
+        // mà đoạn ni là cấu hình để dùng cái
 		http.cors().and().csrf().disable()
 			.exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
 			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()

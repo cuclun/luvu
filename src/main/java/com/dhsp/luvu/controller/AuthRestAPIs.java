@@ -35,7 +35,7 @@ public class AuthRestAPIs {
     UserService userService;
 
     @GetMapping(value = {"/", ""})
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")// để dùng cái ni
     public ResponseEntity<?> getAllAccount() {
         return new ResponseEntity<>(userService.findAll(), HttpStatus.OK);
     }
@@ -60,7 +60,8 @@ public class AuthRestAPIs {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        //tạo 1 accesstoken để khi thực hiện các chức năng của MOD hoặc ADMIN thì hắn sẽ mã hóa lại cái dãy nớ để coi là cái chi mà thực hiện chức năng mô
+        //tạo 1 accesstoken để khi thực hiện các chức năng của MOD hoặc ADMIN
+        // thì hắn sẽ mã hóa lại cái dãy nớ để coi là cái chi mà thực hiện chức năng mô
         String jwt = jwtProvider.generateJwtToken(authentication);
 
         // lưu thông tin đã đăng nhập

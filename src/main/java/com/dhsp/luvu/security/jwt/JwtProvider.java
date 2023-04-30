@@ -16,10 +16,10 @@ public class JwtProvider {
     private static final Logger logger = LoggerFactory.getLogger(JwtProvider.class);
 
     @Value("${jwtSecret}")
-    private String jwtSecret;
+    private String jwtSecret;// dùng để mã hóa hoặc giải mã 1 jwt
 
     @Value("${jwtExpiration}")
-    private int jwtExpiration;
+    private int jwtExpiration;// Heêết thời giaon k là jwt k ho
 
     public String generateJwtToken(Authentication authentication) {
 

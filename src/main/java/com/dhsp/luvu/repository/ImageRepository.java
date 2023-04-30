@@ -16,6 +16,8 @@ public interface ImageRepository extends JpaRepository<Image, Long> {
 
     void deleteAllByProduct(Product product);
 
+    List<Image> findAllByNameContaining(String name);
+
     @Transactional
     @Modifying
     @Query("update Image i set i.product = :product where i.id = :idImage")

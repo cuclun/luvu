@@ -45,7 +45,8 @@ public class DefaultData implements CommandLineRunner {
             cuc.setRoles(roles);
 
             userRepository.save(cuc);
-        }if (!userRepository.findByUsername("myquyen").isPresent()) {
+        }
+        if (!userRepository.findByUsername("myquyen").isPresent()) {
             Set<Role> roles = new HashSet<>(roleRepository.findAll());
 
             User quyen = new User();
