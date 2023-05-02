@@ -21,7 +21,7 @@ public class BannerServiceImpl implements BannerService {
 
     @Override
     public Banner save(BannerRequest request) {
-        if(bannerRepo.count() > 2)
+        if(bannerRepo.count() > 4)
             throw new RuntimeException("Xoá bớt đi rồi thêm");
         try {
             String image = UploadUtils.save(request.getImage());
